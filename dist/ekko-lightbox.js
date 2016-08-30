@@ -274,16 +274,16 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
       height = width + 80;
       this.lightbox_body.html('<iframe width="' + width + '" height="' + height + '" src="' + this.addTrailingSlash(id) + 'embed/" frameborder="0" allowfullscreen></iframe>');
       this.options.onContentLoaded.call(this);
-      if (this.modal_arrows) {
+      if (this.modal_arrows && !this.options.force_arrows) {
         return this.modal_arrows.css('display', 'none');
       }
     },
     showVideoIframe: function(url, width, height) {
       height = height || width;
-      this.resize(width);
       this.lightbox_body.html('<div class="embed-responsive embed-responsive-16by9"><iframe width="' + width + '" height="' + height + '" src="' + url + '" frameborder="0" allowfullscreen class="embed-responsive-item"></iframe></div>');
+      this.resize(width);
       this.options.onContentLoaded.call(this);
-      if (this.modal_arrows) {
+      if (this.modal_arrows && !this.options.force_arrows) {
         this.modal_arrows.css('display', 'none');
       }
       return this;
@@ -291,9 +291,9 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
     loadRemoteContent: function(url) {
       var disableExternalCheck, width;
       width = this.$element.data('width') || 560;
-      this.resize(width);
       disableExternalCheck = this.$element.data('disableExternalCheck') || false;
       if (!disableExternalCheck && !this.isExternal(url)) {
+        this.resize(width);
         this.lightbox_body.load(url, $.proxy((function(_this) {
           return function() {
             return _this.$element.trigger('loaded.bs.modal');
@@ -301,9 +301,10 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
         })(this)));
       } else {
         this.lightbox_body.html('<iframe width="' + width + '" height="' + width + '" src="' + url + '" frameborder="0" allowfullscreen></iframe>');
+        this.resize(width);
         this.options.onContentLoaded.call(this);
       }
-      if (this.modal_arrows) {
+      if (this.modal_arrows && !this.options.force_arrows) {
         this.modal_arrows.css('display', 'none');
       }
       return this;
@@ -424,6 +425,7 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
     left_arrow_class: '.glyphicon .glyphicon-chevron-left',
     right_arrow_class: '.glyphicon .glyphicon-chevron-right',
     directional_arrows: true,
+    force_arrows: false,
     type: null,
     always_show_close: true,
     no_related: false,
